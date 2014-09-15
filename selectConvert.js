@@ -35,6 +35,7 @@ var methods = {
 				defaultname : "All Categories"
 			}, options);
 			useroptions = this.settings;
+			methods.addClone($this);
 			methods.setup();
 		});
 	},
@@ -42,18 +43,18 @@ var methods = {
 	setup : function(){
 		// grab items from the select box before rewriting it.
 		var target = currentSettings.target;
-		methods.addClone(currentSettings.target);
 	},
 
 	addClone : function(n){
 		var children = n.children('option');
 		
+
 		n.before($(useroptions.holder,{
 			class: useroptions.eleclass + " " + useroptions.unique,
 			click : function(e){
 				e.preventDefault();
-				//$this = $(this);
-				methods.setSelectValue(e);
+				methods.setSelectValue(e,$(this));
+				methods.setActive($(this));
 			}
 		}));
 
@@ -63,39 +64,41 @@ var methods = {
 			var name = $this.text();
 			$(useroptions.tag).appendTo("." + useroptions.unique).html('<span>' + name + '</span>').data('value', data).addClass(data);
 		});
+		
 		$("." + useroptions.unique).wrap("<div class='scoptions "+ useroptions.unique +"-options'>");
+
 		$("." + useroptions.unique + "-options").wrap("<div class='"+useroptions.eleclass+"-holder "+ useroptions.unique +"-holder'>");
+	
 		$("." + useroptions.unique + "-options").before($('<span>',{
 			class : 'scplaceholder' + ' ' + useroptions.unique + '-place',
 			text : useroptions.defaultname,
 			click : function(e){
 				e.preventDefault();
-				methods.setActive();
+				methods.setActive($(this).parent('div.sc-select-holder'));
 			}
 		}));
 		n.hide();
 
-		//when complete setup default look.
-		if(useroptions.type == "default"){
-			methods.addStyle();
-		}
 	},
 
-	addStyle : function(){
-
-	},
-
-	setSelectValue : function(elem){
+	setSelectValue : function(elem, item){
+	
 		//console.log(elem.target.parentNode.className + " " + elem.target.parentNode.textContent);
 		var selClass = elem.target.parentNode.className;
 		var selText = elem.target.parentNode.textContent;
-		$("." + useroptions.unique + "-place").text(selText);
-		currentSettings.target.val(selClass).change();
-		methods.setActive();
+		//$("." + useroptions.unique + "-place").text(selText);
+
+		var paritem = item.parents('div.sc-select-holder');
+		console.log(paritem);
+		paritem.next('select').val(selClass).change();
+		//currentSettings.target.val(selClass).change();
+		methods.setActive(item.parents('div.sc-select-holder'));
 	},
-	setActive : function(){
-		console.log(useroptions.unique);
-		$("." + useroptions.unique + "-holder").toggleClass('sc-active');
+	setActive : function(n){
+		var toggle = n;
+		toggle.toggleClass('sc-active');
+	//	console.log(useroptions.unique);
+	//	$("." + useroptions.unique + "-holder").toggleClass('sc-active');
 	}
 
 };

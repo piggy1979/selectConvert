@@ -31,6 +31,7 @@ var methods = {
 				tag: "<li>",
 				holder : "<ul>",
 				eleclass : "sc-select",
+				unique : "scdropdown1",
 				defaultname : "All Categories"
 			}, options);
 			useroptions = this.settings;
@@ -48,7 +49,7 @@ var methods = {
 		var children = n.children('option');
 		
 		n.before($(useroptions.holder,{
-			class: useroptions.eleclass,
+			class: useroptions.eleclass + " " + useroptions.unique,
 			click : function(e){
 				e.preventDefault();
 				//$this = $(this);
@@ -60,12 +61,12 @@ var methods = {
 			var $this = $(this);
 			var data = $this.val();
 			var name = $this.text();
-			$(useroptions.tag).appendTo("." + useroptions.eleclass).html('<span>' + name + '</span>').data('value', data).addClass(data);
+			$(useroptions.tag).appendTo("." + useroptions.unique).html('<span>' + name + '</span>').data('value', data).addClass(data);
 		});
-		$("." + useroptions.eleclass).wrap("<div class='scoptions'>");
-		$(".scoptions").wrap("<div class='"+useroptions.eleclass+"-holder'>");
-		$(".scoptions").before($('<span>',{
-			class : 'scplaceholder',
+		$("." + useroptions.unique).wrap("<div class='scoptions "+ useroptions.unique +"-options'>");
+		$("." + useroptions.unique + "-options").wrap("<div class='"+useroptions.eleclass+"-holder "+ useroptions.unique +"-holder'>");
+		$("." + useroptions.unique + "-options").before($('<span>',{
+			class : 'scplaceholder' + ' ' + useroptions.unique + '-place',
 			text : useroptions.defaultname,
 			click : function(e){
 				e.preventDefault();
@@ -88,12 +89,13 @@ var methods = {
 		//console.log(elem.target.parentNode.className + " " + elem.target.parentNode.textContent);
 		var selClass = elem.target.parentNode.className;
 		var selText = elem.target.parentNode.textContent;
-		$(".scplaceholder").text(selText);
+		$("." + useroptions.unique + "-place").text(selText);
 		currentSettings.target.val(selClass).change();
 		methods.setActive();
 	},
 	setActive : function(){
-		$("." + useroptions.eleclass + "-holder").toggleClass('sc-active');
+		console.log(useroptions.unique);
+		$("." + useroptions.unique + "-holder").toggleClass('sc-active');
 	}
 
 };
